@@ -6,6 +6,13 @@ static const int user_bh = 2;             /* add an defined amount of pixels to 
 static int fuzzy = 1;                      /* -F  option; if 0, dmenu doesn't use fuzzy matching     */
 static int centered = 1;                    /* -c option; centers dmenu on screen */
 static int min_width = 500;                    /* minimum width when centered */
+
+/* use the active window to determine where to put the menu */
+static const int location_using_active_window = 0;
+
+/* use the mouse locaiton to determine where to put the window */
+static const int location_using_mouse = 0;
+
 /* -fn option overrides fonts[0]; default X11 font or font set */
 static const char *fonts[] = {
 	"monospace:size=10"
