@@ -459,15 +459,43 @@ keypress(XKeyEvent *ev)
 			text[cursor] = '\0';
 			match();
 			break;
+
 		case XK_u: /* delete left */
 			insert(NULL, 0 - cursor);
 			break;
+
+        case XK_Delete:
+        	while (text[cursor] != '\0' && strchr(worddelimiters, text[nextrune(1)]))
+            {
+                cursor = nextrune(+1);
+                insert(NULL, nextrune(-1) - cursor);
+            }
+				
+			while (text[cursor] != '\0')
+            {
+                cursor = nextrune(+1);
+                insert(NULL, nextrune(-1) - cursor);
+
+                if(strchr(worddelimiters, text[nextrune(1)]))
+                {
+                    cursor = nextrune(+1);
+                    insert(NULL, nextrune(-1) - cursor);
+                    break;
+                }
+            }
+				
+			goto draw;
+
+        case XK_BackSpace: /* fallthrough */
 		case XK_w: /* delete word */
-			while (cursor > 0 && strchr(worddelimiters, text[nextrune(-1)]))
+            while (cursor > 0 && strchr(worddelimiters, text[nextrune(-1)]))
 				insert(NULL, nextrune(-1) - cursor);
 			while (cursor > 0 && !strchr(worddelimiters, text[nextrune(-1)]))
 				insert(NULL, nextrune(-1) - cursor);
-			break;
+            goto draw;
+        
+        case XK_v:
+        case XK_V:
 		case XK_y: /* paste selection */
 		case XK_Y:
 			XConvertSelection(dpy, (ev->state & ShiftMask) ? clip : XA_PRIMARY,
